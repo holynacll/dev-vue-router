@@ -9,7 +9,7 @@
           name: 'destination.show',
           params: {
             id: destination.id,
-            slug: destination.slug,
+            experienceSlug: destination.slug,
           },
         }"
       >
