@@ -9,6 +9,27 @@ const routes = [
     component: HomeView,
   },
   {
+    path: "/login",
+    name: "login",
+    component: () => import("@/views/LoginView.vue"),
+  },
+  {
+    path: "/protected",
+    name: "protected",
+    component: () => import("@/views/ProtectedView.vue"),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/invoices",
+    name: "invoices",
+    component: () => import("@/views/InvoicesView.vue"),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     path: "/destination/:id/:slug",
     name: "destination.show",
     component: () =>
@@ -20,10 +41,11 @@ const routes = [
       const exists = sourceData.destinations.find(
         (destination) => destination.id === parseInt(to.params.id)
       );
-      if (!exists) return {
-        name: "NotFound",
-        params: { pathMatch: to.path.split('/').slice }
-      };
+      if (!exists)
+        return {
+          name: "NotFound",
+          params: { pathMatch: to.path.split("/").slice },
+        };
     },
     children: [
       {
@@ -48,6 +70,18 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return (
+      savedPosition ||
+      new Promise((resolve) => {
+        setTimeout(() => resolve({ top: 0, behavior: "smooth" }), 300);
+      })
+    );
+  },
 });
-
+router.beforeEach((to) => {
+  if (to.meta.requiresAuth && !window.user) {
+    return { name: "login" };
+  }
+});
 export default router;
