@@ -81,7 +81,7 @@ const router = createRouter({
 });
 router.beforeEach((to) => {
   if (to.meta.requiresAuth && !window.user) {
-    return { name: "login" };
+    return { name: "login", query: { redirect: to.fullPath } };
   }
 });
 export default router;
